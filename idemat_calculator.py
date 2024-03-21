@@ -13,10 +13,10 @@ def load_data(sheet_name):
     data.columns = new_header
     data.drop(index=[0,1,2], inplace=True)
 
-    # data cleaning: 1) remove A-C columns and columns starts with 'Unnamed', 2) remove empty rows
+    # data cleaning: 1) remove A-C columns, columns starts with 'Unnamed' and column starts with "Note", 2) remove empty rows
     data.drop(data.columns[0:3], axis=1, inplace=True)
     # unnamed_col = [col for col in data.columns if col.startswith('Unnamed')]
-    data.drop([col for col in data.columns if col.startswith('Unnamed')], axis=1, inplace=True)
+    data.drop([col for col in data.columns if col.startswith('Unnamed') or col.startswith('Note')], axis=1, inplace=True)
     data.dropna(how='all', inplace=True)
     data.reset_index(drop=True, inplace=True)
     # print(data.columns)
@@ -112,8 +112,9 @@ else:
 # Calculation
 # Sidebar for filters
 st.sidebar.header('Impact Assessment Categories')
-# Get all column headers from the DataFrame
-column_headers = data.columns.tolist()
+# retain only the impact category column headers
+column_headers = data.columns.tolist()[3:]
+
 # User selects which columns (headers) filter by
 selected_headers = st.sidebar.multiselect(
     'Select impact assessment categories', 
